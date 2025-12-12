@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rally Académico</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .scene {
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s ease;
+            opacity: 1;
+        }
+
+        .hidden {
+            display: none;
+            opacity: 0;
+        }
+
+        .scene-title {
+            font-size: 2.8rem;
+            color: #2c5aa0;
+            margin-bottom: 1rem;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .scene-description {
+            font-size: 1.4rem;
+            max-width: 900px;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #444;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .scene-content {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .school-yard {
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(to bottom, #87CEEB 30%, #6db865 70%);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="%232c5aa0" opacity="0.8"/><text x="20" y="25" font-size="18" text-anchor="middle" fill="white">👥</text></svg>') 20 20, auto;
+        }
+
+        .station {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-color: #ff9f43;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .station:hover {
+            transform: scale(1.1);
+            background-color: #ff7b00;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .cone {
+            position: absolute;
+            width: 20px;
+            height: 40px;
+            background-color: #ff6b6b;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .students {
+            position: absolute;
+            width: 40px;
+            height: 60px;
+            background-color: #3498db;
+            border-radius: 50% 50% 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            transition: all 0.5s ease;
+            z-index: 5;
+        }
+
+        .team {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: move;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background-color: #2c5aa0;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            background-color: #1e3d6f;
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .qr-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, #333 25%, #555 25%, #555 50%, #333 50%, #333 75%, #555 75%);
+            background-size: 20px 20px;
+            margin: 1.5rem 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-code::after {
+            content: "QR";
+            font-size: 3rem;
+            color: white;
+            font-weight: bold;
+            background-color: #2c5aa0;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+        }
+
+        .mobile-screen {
+            width: 300px;
+            height: 500px;
+            background-color: #1a1a1a;
+            border-radius: 25px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .mobile-header {
+            background-color: #2c5aa0;
+            color: white;
+            padding: 15px;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .mobile-content {
+            background-color: white;
+            height: calc(100% - 70px);
+            border-radius: 0 0 15px 15px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .mystery-card {
+            height: 120px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .mystery-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .question-container {
+            width: 100%;
+        }
+
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .option {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background-color: #e9ecef;
+        }
+
+        .option.selected {
+            border-color: #2c5aa0;
+            background-color: #e3f2fd;
+        }
+
+        .option.correct {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+
+        .option.incorrect {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #2c5aa0;
+            outline: none;
+        }
+
+        .punishment-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .frog-container {
+            display: flex;
+            gap: 30px;
+            margin: 2rem 0;
+        }
+
+        .frog {
+            font-size: 3rem;
+            position: relative;
+            animation: frogJump 1.5s infinite ease-in-out;
+        }
+
+        .frog:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .frog:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes frogJump {
+            0%, 100% { 
+                transform: translateY(0) rotate(0deg); 
+            }
+            25% { 
+                transform: translateY(-40px) rotate(-5deg); 
+            }
+            50% { 
+                transform: translateY(-60px) rotate(5deg); 
+            }
+            75% { 
+                transform: translateY(-40px) rotate(-5deg); 
+            }
+        }
+
+        .teacher {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #2c5aa0;
+        }
+
+        .all-teams {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+            margin-top: 2rem;
+        }
+
+        .team-circle {
+            width: 100px;
+            height: 100px;
+            background-color: #3498db;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .podium {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 30px;
+            margin-top: 2rem;
+            height: 300px;
+        }
+
+        .podium-place {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .podium-stand {
+            width: 120px;
+            background: linear-gradient(to top, #ffd700, #ffed4e);
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            font-weight: bold;
+            font-size: 2rem;
+        }
+
+        .podium-stand.second {
+            height: 180px;
+            background: linear-gradient(to top, #c0c0c0, #e0e0e0);
+        }
+
+        .podium-stand.first {
+            height: 220px;
+        }
+
+        .podium-stand.third {
+            height: 150px;
+            background: linear-gradient(to top, #cd7f32, #e6a756);
+        }
+
+        .final-text {
+            font-size: 3rem;
+            color: #2c5aa0;
+            text-align: center;
+            margin-top: 2rem;
+            animation: float 3s infinite ease-in-out;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .scene-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 2rem;
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator-dot.active {
+            background-color: #2c5aa0;
+            transform: scale(1.2);
+        }
+
+        .celebration {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .celebration-item {
+            width: 80px;
+            height: 80px;
+            background-color: #ff9f43;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.8rem;
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-20px); }
+        }
+
+        .station-label {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        @media (max-width: 768px) {
+            .scene-title {
+                font-size: 2rem;
+            }
+            
+            .scene-description {
+                font-size: 1.1rem;
+            }
+            
+            .school-yard {
+                height: 350px;
+            }
+            
+            .all-teams {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .podium {
+                gap: 15px;
+            }
+            
+            .podium-stand {
+                width: 80px;
+            }
+            
+            .frog-container {
+                gap: 15px;
+            }
+            
+            .frog {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ESCENA 1 – Vista general de la escuela -->
+    <section id="scene1" class="scene">
+        <h1 class="scene-title">Rally Académico</h1>
+        <p class="scene-description">Plano general del patio de una escuela con varias estaciones marcadas con conos, mesas y carteles. Ambiente luminoso, estudiantes caminando entre estaciones. Estilo realista, tono académico y dinámico.</p>
+        
+        <div class="scene-content">
+            <div class="school-yard" id="school-yard">
+                <!-- Las estaciones y estudiantes se generarán con JavaScript -->
+            </div>
+            
+            <div class="controls">
+                <button class="btn" onclick="nextScene(2)">
+                    <i class="fas fa-running"></i> Comenzar Rally
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ESCENA 2 – El equipo llega a la Estación 1 -->
+    <section id="scene2" class="scene hidden">
+        <h2 class="scene-title">Estación 1</h2>
+        <p class="scene-description">Un grupo de 4 estudiantes (mixtos, 15–17 años) llega corriendo a la Estación 1. Uno de ellos sostiene un celular. Cartel visible: 'Estación 1'. Entorno escolar.</p>
+        
+        <div class="scene-content">
+            <div class="school-yard" id="station-yard">
+                <!-- Estación 1 con equipo -->
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="prevScene(1)">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <button class="btn" onclick="nextScene(3)">
+                    <i class="fas fa-qrcode"></i> Escanear Código QR
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ESCENA 3 – Escaneo del código QR -->
+    <section id="scene3" class="scene hidden">
+        <h2 class="scene-title">Escaneo del QR</h2>
+        <p class="scene-description">Primer plano del estudiante tomando una hoja de papel con un código QR impreso. El estudiante escanea el QR con su celular y la cámara muestra la pantalla iluminándose y cargando una página web.</p>
+        
+        <div class="scene-content">
+            <div class="qr-container">
+                <h3>Código QR de la Estación 1</h3>
+                <div class="qr-code"></div>
+                <p>Escanea este código para acceder a la pregunta</p>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="prevScene(2)">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <button class="btn" onclick="nextScene(4)">
+                    <i class="fas fa-mobile-alt"></i> Simular Escaneo
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ESCENA 4 – Página web con cartas misteriosas -->
+    <section id="scene4" class="scene hidden">
+        <h2 class="scene-title">Cartas Misteriosas</h2>
+        <p class="scene-description">Vista clara de la pantalla del celular: aparece una página web con 3 cartas misteriosas animadas. Los otros 3 estudiantes se acercan curiosos mirando la pantalla. Ambiente colaborativo.</p>
+        
+        <div class="scene-content">
+            <div class="mobile-screen">
+                <div class="mobile-header">
+                    Rally Académico - Estación 1
+                </div>
+                <div class="mobile-content">
+                    <h3>Selecciona una carta misteriosa:</h3>
+                    <div class="cards-container" id="cards-container">
+                        <div class="mystery-card" onclick="selectCard(1)">?</div>
+                        <div class="mystery-card" onclick="selectCard(2)">?</div>
+                        <div class="mystery-card" onclick="selectCard(3)">?</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="prevScene(3)">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <button class="btn" id="next-question-btn" style="display:none;" onclick="nextScene(5)">
+                    <i class="fas fa-question-circle"></i> Ver Pregunta
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ESCENA 5 – Pregunta con 4 opciones -->
+    <section id="scene5" class="scene hidden">
+        <h2 class="scene-title">Pregunta del Rally</h2>
+        <p class="scene-description">Al seleccionar una carta, aparece una pregunta tipo quiz con 4 opciones. Los estudiantes discuten unos segundos y eligen una opción en la pantalla.</p>
+        
+        <div class="scene-content">
+            <div class="mobile-screen">
+                <div class="mobile-header">
+                    Rally Académico - Pregunta
+                </div>
+                <div class="mobile-content">
+                    <div class="question-container">
+                        <div class="question" id="question-text">¿Cuál es el río más largo del mundo?</div>
+                        <div class="option" onclick="selectOption(1)" id="option1">Amazonas</div>
+                        <div class="option" onclick="selectOption(2)" id="option2">Nilo</div>
+                        <div class="option" onclick="selectOption(3)" id="option3">Yangtsé</div>
+                        <div class="option" onclick="selectOption(4)" id="option4">Misisipi</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="prevScene(4)">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <button class="btn" id="submit-answer-btn" onclick="submitAnswer()">
+                    <i class="fas fa-paper-plane"></i> Enviar Respuesta
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ESCENA 6 – Ingreso de datos del equipo -->
+    <section id="scene6" class="scene hidden">
+        <h2 class="scene-title">Datos del Equipo</h2>
+        <p class="scene-description">La página web solicita número de equipo y contraseña. Los estudiantes ingresan sus datos rápidamente. Enseguida salen corriendo hacia la siguiente estación.</p>
+        
+        <div class="scene-content">
+            <div class="form-container">
+                <h3>Ingresa los datos de tu equipo</h3>
+                <div class="form-group">
+                    <label for="team-number">Número de equipo:</label>
+                    <input type="number" id="team-number" class="form-control" min="1" max="20" value="7">
+                </div>
+                <div class="form-group">
+                    <label for="team-password">Contraseña del equipo:</label>
+                    <input type="password" id="team-password" class="form-control" value="rally2024">
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="prevScene(5)">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <button class="btn" onclick="nextScene(7)">
+                    <i class="fas fa-running"></i> Continuar a Siguiente Estación
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ESCENA 7 – El maestro los corrige -->
+    <section id="scene7" class="scene hidden">
+        <h2 class="scene-title">Corrección del Maestro</h2>
+        <p class="scene-description">En la siguiente estación, un maestro revisa la respuesta en su celular o tablet. El maestro les dice que se equivocaron. Los estudiantes ahora hacen saltos de rana como castigo, de manera divertida. El maestro los observa con humor.</p>
+        
+        <div class="scene-content">
+            <div class="teacher">
+                <i class="fas fa-chalkboard-teacher"></i> Maestro
+            </div>
+            <p style="font-size: 1.3rem; margin-bottom: 1.5rem; text-align: center;">¡Lo siento equipo! La respuesta era incorrecta.</p>
+            
+            <div class="punishment-container">
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">Castigo: 10 saltos de rana</p>
+                <div class="frog-container">
+                    <div class="frog">🐸</div>
+                    <div class="frog">🐸</div>
+                    <div class="frog">🐸</div>
+                </div>
+                <p style="font-size: 1rem; color: #666; margin-top: 1rem;">Los estudiantes realizan saltos de rana como castigo divertido</p>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="prevScene(6)">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <button class="btn" onclick="nextScene(8)">
+                    <i class="fas fa-users"></i> Continuar al Final
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ESCENA 8 – Todos los equipos reunidos -->
+    <section id="scene8" class="scene hidden">
+        <h2 class="scene-title">Reunión de Equipos</h2>
+        <p class="scene-description">Plano amplio del centro de la escuela. Están reunidos los 10 equipos, alrededor de 40 estudiantes. Están cansados pero emocionados, esperando los resultados.</p>
+        
+        <div class="scene-content">
+            <div class="all-teams" id="all-teams">
+                <!-- Los equipos se generarán con JavaScript -->
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="prevScene(7)">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <button class="btn" onclick="nextScene(9)">
+                    <i class="fas fa-trophy"></i> Ceremonia de Premiación
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ESCENA 9 – Maestro da discurso final -->
+    <section id="scene9" class="scene hidden">
+        <h2 class="scene-title">Discurso Final</h2>
+        <p class="scene-description">Un maestro frente al grupo da un discurso de cierre. Mientras habla, revisa los ganadores en su celular. Anuncia los tres primeros lugares del rally. Los estudiantes aplauden y celebran.</p>
+        
+        <div class="scene-content">
+            <div class="teacher">
+                <i class="fas fa-chalkboard-teacher"></i> Maestro
+            </div>
+            
+            <div class="speech" style="max-width: 800px; background-color: white; padding: 2rem; border-radius: 15px; margin: 2rem 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <p style="font-size: 1.3rem; margin-bottom: 1rem;">¡Excelente trabajo a todos los equipos! Hoy han demostrado no solo conocimientos académicos, sino también trabajo en equipo, creatividad y perseverancia.</p>
+                <p style="font-size: 1.3rem;">Ahora, es el momento que todos han estado esperando... ¡los resultados del Rally Académico!</p>
+            </div>
+            
+            <div class="podium">
+                <div class="podium-place">
+                    <div class="podium-stand second">2°</div>
+                    <div>Equipo 4</div>
+                </div>
+                <div class="podium-place">
+                    <div class="podium-stand first">1°</div>
+                    <div>Equipo 7</div>
+                </div>
+                <div class="podium-place">
+                    <div class="podium-stand third">3°</div>
+                    <div>Equipo 9</div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="prevScene(8)">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <button class="btn" onclick="nextScene(10)">
+                    <i class="fas fa-star"></i> Cierre Final
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ESCENA 10 – Cierre -->
+    <section id="scene10" class="scene hidden">
+        <h2 class="scene-title">¡Rally Completado!</h2>
+        <p class="scene-description">Plano final con música alegre. Estudiantes celebrando, levantando manos, abrazándose. Texto flotante: 'Rally Académico – ¡Aprender también es una aventura!'</p>
+        
+        <div class="scene-content">
+            <div class="celebration">
+                <div class="celebration-item" style="animation-delay: 0s;">🎉</div>
+                <div class="celebration-item" style="animation-delay: 0.2s;">🏆</div>
+                <div class="celebration-item" style="animation-delay: 0.4s;">🎓</div>
+                <div class="celebration-item" style="animation-delay: 0.6s;">⭐</div>
+                <div class="celebration-item" style="animation-delay: 0.8s;">🎈</div>
+            </div>
+            
+            <div class="final-text">Rally Académico – ¡Aprender también es una aventura!</div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="prevScene(9)">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <button class="btn" onclick="restartGame()">
+                    <i class="fas fa-redo"></i> Jugar Nuevamente
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Indicador de escenas -->
+    <div class="scene-indicator" id="scene-indicator">
+        <!-- Los puntos se generarán con JavaScript -->
+    </div>
+
+    <script>
+        // Variables globales
+        let currentScene = 1;
+        let selectedCard = null;
+        let selectedOption = null;
+        const totalScenes = 10;
+        
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generar el patio escolar para la escena 1
+            generateSchoolYard();
+            
+            // Generar el patio con estación para la escena 2
+            generateStationYard();
+            
+            // Generar todos los equipos para la escena 8
+            generateAllTeams();
+            
+            // Generar indicador de escenas
+            generateSceneIndicator();
+            
+            // Mostrar la primera escena
+            showScene(1);
+        });
+        
+        // Generar el patio escolar
+        function generateSchoolYard() {
+            const yard = document.getElementById('school-yard');
+            yard.innerHTML = '';
+            
+            // Crear estaciones
+            const stations = [
+                {top: '15%', left: '10%', number: 1},
+                {top: '30%', left: '70%', number: 2},
+                {top: '60%', left: '20%', number: 3},
+                {top: '70%', left: '60%', number: 4},
+                {top: '40%', left: '40%', number: 5}
+            ];
+            
+            stations.forEach(station => {
+                const stationDiv = document.createElement('div');
+                stationDiv.className = 'station';
+                stationDiv.style.top = station.top;
+                stationDiv.style.left = station.left;
+                stationDiv.innerHTML = `<div class="station-label">Estación ${station.number}</div>`;
+                stationDiv.onclick = function() {
+                    moveTeamToStation(station.number);
+                };
+                yard.appendChild(stationDiv);
+                
+                // Agregar conos alrededor de la estación
+                for (let i = 0; i < 4; i++) {
+                    const cone = document.createElement('div');
+                    cone.className = 'cone';
+                    const angle = i * 90;
+                    const radius = 60;
+                    const coneTop = parseInt(station.top) + Math.sin(angle * Math.PI / 180) * radius;
+                    const coneLeft = parseInt(station.left) + Math.cos(angle * Math.PI / 180) * radius;
+                    cone.style.top = `${coneTop}px`;
+                    cone.style.left = `${coneLeft}px`;
+                    yard.appendChild(cone);
+                }
+            });
+            
+            // Crear equipos de estudiantes moviéndose
+            const teams = [
+                {top: '20%', left: '30%', number: 1},
+                {top: '50%', left: '10%', number: 2},
+                {top: '25%', left: '80%', number: 3},
+                {top: '65%', left: '40%', number: 4},
+                {top: '80%', left: '70%', number: 5}
+            ];
+            
+            teams.forEach(team => {
+                const teamDiv = document.createElement('div');
+                teamDiv.className = 'team';
+                teamDiv.style.top = team.top;
+                teamDiv.style.left = team.left;
+                teamDiv.id = `team-${team.number}`;
+                
+                const student = document.createElement('div');
+                student.className = 'students';
+                student.textContent = `T${team.number}`;
+                student.style.backgroundColor = getTeamColor(team.number);
+                teamDiv.appendChild(student);
+                
+                yard.appendChild(teamDiv);
+                
+                // Animación automática de movimiento
+                animateTeamMovement(teamDiv, team.number);
+            });
+        }
+        
+        // Generar color para cada equipo
+        function getTeamColor(teamNumber) {
+            const colors = ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6', 
+                           '#1abc9c', '#d35400', '#34495e', '#7f8c8d', '#27ae60'];
+            return colors[(teamNumber - 1) % colors.length];
+        }
+        
+        // Animar movimiento de equipos
+        function animateTeamMovement(teamDiv, teamNumber) {
+            // Mover el equipo de manera aleatoria por el patio
+            setInterval(() => {
+                const newTop = Math.random() * 80 + 5;
+                const newLeft = Math.random() * 80 + 5;
+                
+                teamDiv.style.transition = 'all 3s ease';
+                teamDiv.style.top = `${newTop}%`;
+                teamDiv.style.left = `${newLeft}%`;
+            }, 4000 + teamNumber * 1000);
+        }
+        
+        // Mover equipo a una estación específica
+        function moveTeamToStation(stationNumber) {
+            // Encontrar la estación
+            const stations = document.querySelectorAll('.station');
+            let targetStation = null;
+            
+            stations.forEach(station => {
+                if (station.textContent.includes(`Estación ${stationNumber}`)) {
+                    targetStation = station;
+                }
+            });
+            
+            if (!targetStation) return;
+            
+            // Obtener posición de la estación
+            const stationRect = targetStation.getBoundingClientRect();
+            const yardRect = document.getElementById('school-yard').getBoundingClientRect();
+            
+            // Calcular posición relativa
+            const stationTop = stationRect.top - yardRect.top + stationRect.height / 2;
+            const stationLeft = stationRect.left - yardRect.left + stationRect.width / 2;
+            
+            // Mover todos los equipos hacia la estación
+            const teams = document.querySelectorAll('.team');
+            teams.forEach((team, index) => {
+                // Calcular posición ligeramente diferente para cada equipo
+                const offsetTop = (index % 3) * 30 - 30;
+                const offsetLeft = (Math.floor(index / 3)) * 30 - 30;
+                
+                team.style.transition = 'all 2s ease';
+                team.style.top = `${stationTop + offsetTop}px`;
+                team.style.left = `${stationLeft + offsetLeft}px`;
+            });
+        }
+        
+        // Generar patio con estación para escena 2
+        function generateStationYard() {
+            const yard = document.getElementById('station-yard');
+            yard.innerHTML = '';
+            
+            // Estación 1 en el centro
+            const stationDiv = document.createElement('div');
+            stationDiv.className = 'station';
+            stationDiv.style.top = '50%';
+            stationDiv.style.left = '50%';
+            stationDiv.style.transform = 'translate(-50%, -50%)';
+            stationDiv.style.width = '100px';
+            stationDiv.style.height = '100px';
+            stationDiv.style.fontSize = '1.2rem';
+            stationDiv.innerHTML = '<div class="station-label">Estación 1</div>';
+            yard.appendChild(stationDiv);
+            
+            // Equipo 7 llegando a la estación
+            const teamDiv = document.createElement('div');
+            teamDiv.className = 'team';
+            teamDiv.style.top = '30%';
+            teamDiv.style.left = '30%';
+            teamDiv.id = 'team7';
+            
+            const student = document.createElement('div');
+            student.className = 'students';
+            student.textContent = 'T7';
+            student.style.backgroundColor = '#9b59b6';
+            teamDiv.appendChild(student);
+            
+            yard.appendChild(teamDiv);
+            
+            // Animar el equipo moviéndose hacia la estación
+            setTimeout(() => {
+                teamDiv.style.top = '40%';
+                teamDiv.style.left = '40%';
+                teamDiv.style.transition = 'all 1s ease';
+            }, 500);
+            
+            setTimeout(() => {
+                teamDiv.style.top = '50%';
+                teamDiv.style.left = '50%';
+                teamDiv.style.transform = 'translate(-50%, -50%)';
+                teamDiv.style.transition = 'all 1s ease';
+            }, 1500);
+        }
+        
+        // Generar todos los equipos para escena 8
+        function generateAllTeams() {
+            const container = document.getElementById('all-teams');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 10; i++) {
+                const teamCircle = document.createElement('div');
+                teamCircle.className = 'team-circle';
+                teamCircle.textContent = i;
+                teamCircle.style.backgroundColor = getTeamColor(i);
+                
+                // Agregar animación de cansancio (movimiento suave)
+                if (i % 2 === 0) {
+                    teamCircle.style.animation = 'float 3s infinite ease-in-out';
+                    teamCircle.style.animationDelay = `${i * 0.1}s`;
+                }
+                
+                container.appendChild(teamCircle);
+            }
+        }
+        
+        // Generar indicador de escenas
+        function generateSceneIndicator() {
+            const indicator = document.getElementById('scene-indicator');
+            indicator.innerHTML = '';
+            
+            for (let i = 1; i <= totalScenes; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'indicator-dot';
+                if (i === currentScene) dot.classList.add('active');
+                dot.setAttribute('data-scene', i);
+                dot.addEventListener('click', function() {
+                    const sceneNum = parseInt(this.getAttribute('data-scene'));
+                    showScene(sceneNum);
+                });
+                indicator.appendChild(dot);
+            }
+        }
+        
+        // Mostrar una escena específica
+        function showScene(sceneNumber) {
+            // Ocultar todas las escenas
+            for (let i = 1; i <= totalScenes; i++) {
+                const scene = document.getElementById(`scene${i}`);
+                scene.classList.add('hidden');
+            }
+            
+            // Mostrar la escena seleccionada
+            const currentSceneElement = document.getElementById(`scene${sceneNumber}`);
+            currentSceneElement.classList.remove('hidden');
+            
+            // Actualizar indicador de escenas
+            const dots = document.querySelectorAll('.indicator-dot');
+            dots.forEach(dot => {
+                dot.classList.remove('active');
+                if (parseInt(dot.getAttribute('data-scene')) === sceneNumber) {
+                    dot.classList.add('active');
+                }
+            });
+            
+            currentScene = sceneNumber;
+            
+            // Desplazar al inicio de la página
+            window.scrollTo(0, 0);
+        }
+        
+        // Ir a la siguiente escena
+        function nextScene(next) {
+            showScene(next);
+        }
+        
+        // Ir a la escena anterior
+        function prevScene(prev) {
+            showScene(prev);
+        }
+        
+        // Seleccionar una carta misteriosa
+        function selectCard(cardNumber) {
+            // Resetear selección anterior
+            const cards = document.querySelectorAll('.mystery-card');
+            cards.forEach(card => {
+                card.style.backgroundColor = '';
+                card.textContent = '?';
+            });
+            
+            // Marcar carta seleccionada
+            const selectedCardElement = cards[cardNumber - 1];
+            selectedCardElement.style.backgroundColor = '#ff9f43';
+            selectedCardElement.textContent = '✓';
+            
+            selectedCard = cardNumber;
+            
+            // Mostrar el botón para continuar
+            document.getElementById('next-question-btn').style.display = 'block';
+        }
+        
+        // Seleccionar una opción de respuesta
+        function selectOption(optionNumber) {
+            // Resetear selección anterior
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Marcar opción seleccionada
+            const selectedOptionElement = document.getElementById(`option${optionNumber}`);
+            selectedOptionElement.classList.add('selected');
+            
+            selectedOption = optionNumber;
+        }
+        
+        // Enviar respuesta
+        function submitAnswer() {
+            if (!selectedOption) {
+                alert('Por favor, selecciona una opción antes de enviar.');
+                return;
+            }
+            
+            const options = document.querySelectorAll('.option');
+            const correctAnswer = 1; // Amazonas es la respuesta correcta
+            
+            // Mostrar respuesta correcta e incorrecta
+            options.forEach((option, index) => {
+                if (index + 1 === correctAnswer) {
+                    option.classList.add('correct');
+                } else if (index + 1 === selectedOption && selectedOption !== correctAnswer) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Deshabilitar opciones
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+            
+            // Cambiar texto del botón
+            const submitBtn = document.getElementById('submit-answer-btn');
+            submitBtn.innerHTML = '<i class="fas fa-check"></i> Respuesta Enviada';
+            submitBtn.style.backgroundColor = selectedOption === correctAnswer ? '#28a745' : '#dc3545';
+            submitBtn.disabled = true;
+            
+            // Después de 2 segundos, avanzar automáticamente
+            setTimeout(() => {
+                nextScene(6);
+            }, 2000);
+        }
+        
+        // Reiniciar el juego
+        function restartGame() {
+            // Resetear variables
+            selectedCard = null;
+            selectedOption = null;
+            
+            // Resetear escena de cartas
+            const cards = document.querySelectorAll('.mystery-card');
+            cards.forEach(card => {
+                card.style.backgroundColor = '';
+                card.textContent = '?';
+            });
+            document.getElementById('next-question-btn').style.display = 'none';
+            
+            // Resetear escena de preguntas
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+                option.style.pointerEvents = 'auto';
+            });
+            
+            const submitBtn = document.getElementById('submit-answer-btn');
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Respuesta';
+            submitBtn.style.backgroundColor = '';
+            submitBtn.disabled = false;
+            
+            // Volver a la primera escena
+            showScene(1);
+        }
+    </script>
+</body>
+</html>
